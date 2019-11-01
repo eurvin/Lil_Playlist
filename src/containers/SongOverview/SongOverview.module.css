@@ -1,0 +1,8 @@
+.SongOverview {
+	width: 100%;
+	display: flex;
+}
+.SongOverview div {
+	width: 25%;
+	display: flex;
+}
