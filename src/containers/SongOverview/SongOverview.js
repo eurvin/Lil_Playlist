@@ -30,9 +30,12 @@ class SongOverview extends Component {
 		],
 	};
 
-	// addSong = (song) => {
-	// 	// doe iets om de state aan te passen
-	// };
+	addSong = (event) => {
+		let song = event;
+		console.log(song);
+		event.preventDefault();
+	};
+
 	// add above table <SongForm addSong={divis.addSong} />
 	// add below table <SongList songs={divis.state.songs} />
 	// <div className='song-row__item'>Add Song</div>
@@ -40,7 +43,7 @@ class SongOverview extends Component {
 	render() {
 		return (
 			<div>
-				<SongForm />
+				<SongForm clicked={this.addSong} title={this.title} />
 				<div className={classes.SongOverview}>
 					<div className='song-row__item'>Song</div>
 					<div className='song-row__item'>Artist</div>
