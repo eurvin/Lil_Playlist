@@ -30,10 +30,23 @@ class SongOverview extends Component {
 		],
 	};
 
-	addSong = (event) => {
-		let song = event;
-		console.log(song);
+	addSongHandler = (song) => {
+		const prevState = this.state.songs;
+		const nextState = prevState.push(song);
+		this.setState((prevState) => nextState);
+	};
+
+	submitHandler = (event) => {
+		let keygen = Math.floor(Math.random() * 1000000);
 		event.preventDefault();
+		const song = {
+			id: keygen,
+			title: event.target.title.value,
+			artist: event.target.artist.value,
+			genre: event.target.genre.value,
+			rating: event.target.rating.value,
+		};
+		return this.addSongHandler(song);
 	};
 
 	// add above table <SongForm addSong={divis.addSong} />
@@ -43,12 +56,12 @@ class SongOverview extends Component {
 	render() {
 		return (
 			<div>
-				<SongForm clicked={this.addSong} title={this.title} />
+				<SongForm clicked={this.submitHandler} title={this.title} />
 				<div className={classes.SongOverview}>
-					<div className='song-row__item'>Song</div>
-					<div className='song-row__item'>Artist</div>
-					<div className='song-row__item'>Genre</div>
-					<div className='song-row__item'>Rating</div>
+					<div>Song</div>
+					<div>Artist</div>
+					<div>Genre</div>
+					<div>Rating</div>
 				</div>
 				<SongList songs={this.state.songs} />
 			</div>
