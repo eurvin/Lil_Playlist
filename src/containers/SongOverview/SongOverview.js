@@ -13,28 +13,37 @@ class SongOverview extends Component {
 		this.setState({ songs: newState });
 	};
 
+	getServerState = () => {
+		axios
+			.get(`songs.json`)
+			.then((res) => {
+				const songs = Object.keys(res.data).map((key) => {
+					let data = res.data[key];
+					data.id = key;
+					return data;
+				});
+				this.stateUpdateHandler(songs);
+			})
+			.catch((error) => console.log(error));
+	};
+
 	componentDidMount() {
-		axios.get(`songs.json`).then((res) => {
-			const songs = Object.keys(res.data).map((key) => {
-				let data = res.data[key];
-				data.id = key;
-				return data;
-			});
-			this.stateUpdateHandler(songs);
-		});
+		this.getServerState();
 	}
 
 	addSongHandler = (song) => {
-		axios.post(`songs.json`, song).then((res) => {
-			song.id = res.data;
-			const prevState = [...this.state.songs];
-			const nextState = prevState.concat(song);
-			return this.stateUpdateHandler(nextState);
-		});
+		axios
+			.post(`songs.json`, song)
+			.then((res) => {
+				song.id = res.data.name;
+				const prevState = [...this.state.songs];
+				const nextState = prevState.concat(song);
+				return this.stateUpdateHandler(nextState);
+			})
+			.catch((error) => console.log(error));
 	};
 
 	submitHandler = (event) => {
-		//let keygen = Math.floor(Math.random() * 1000000);
 		event.preventDefault();
 		const song = {
 			artist: event.target.artist.value,
@@ -43,6 +52,14 @@ class SongOverview extends Component {
 			title: event.target.title.value,
 		};
 		return this.addSongHandler(song);
+	};
+
+	deleteSongHandler = (event) => {
+		const song = event.target.value;
+		axios
+			.delete(`/songs/${song}.json`)
+			.then((res) => this.getServerState())
+			.catch((error) => console.log(error));
 	};
 
 	render() {
@@ -54,8 +71,9 @@ class SongOverview extends Component {
 					<div>Artist</div>
 					<div>Genre</div>
 					<div>Rating</div>
+					<div>Delete</div>
 				</div>
-				<SongList songs={this.state.songs} />
+				<SongList songs={this.state.songs} deleted={this.deleteSongHandler} />
 			</div>
 		);
 	}
