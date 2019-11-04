@@ -2,56 +2,48 @@ import React, { Component } from 'react';
 import SongList from '../../components/SongList/SongList';
 import SongForm from '../../components/SongForm/SongForm';
 import classes from './SongOverview.module.css';
+import axios from '../../axios';
 
 class SongOverview extends Component {
 	state = {
-		songs: [
-			{
-				id: '1',
-				title: 'Gettin Jiggy with it',
-				artist: 'Will Smidth',
-				genre: 'Pop',
-				rating: 5,
-			},
-			{
-				id: '2',
-				title: 'Brick Road',
-				artist: 'CeeLo Green',
-				genre: 'R&B',
-				rating: 2,
-			},
-			{
-				id: '3',
-				title: 'Happy',
-				artist: 'Pharrell Williams',
-				genre: 'Pop',
-				rating: 1,
-			},
-		],
+		songs: [],
 	};
 
+	stateUpdateHandler = (newState) => {
+		this.setState({ songs: newState });
+	};
+
+	componentDidMount() {
+		axios.get(`songs.json`).then((res) => {
+			const songs = Object.keys(res.data).map((key) => {
+				let data = res.data[key];
+				data.id = key;
+				return data;
+			});
+			this.stateUpdateHandler(songs);
+		});
+	}
+
 	addSongHandler = (song) => {
-		const prevState = this.state.songs;
-		const nextState = prevState.push(song);
-		this.setState((prevState) => nextState);
+		axios.post(`songs.json`, song).then((res) => {
+			song.id = res.data;
+			const prevState = [...this.state.songs];
+			const nextState = prevState.concat(song);
+			return this.stateUpdateHandler(nextState);
+		});
 	};
 
 	submitHandler = (event) => {
-		let keygen = Math.floor(Math.random() * 1000000);
+		//let keygen = Math.floor(Math.random() * 1000000);
 		event.preventDefault();
 		const song = {
-			id: keygen,
-			title: event.target.title.value,
 			artist: event.target.artist.value,
 			genre: event.target.genre.value,
 			rating: event.target.rating.value,
+			title: event.target.title.value,
 		};
 		return this.addSongHandler(song);
 	};
-
-	// add above table <SongForm addSong={divis.addSong} />
-	// add below table <SongList songs={divis.state.songs} />
-	// <div className='song-row__item'>Add Song</div>
 
 	render() {
 		return (
