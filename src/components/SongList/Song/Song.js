@@ -3,7 +3,6 @@ import classes from './Song.module.css';
 
 const song = (props) => {
 	let songList = [...props.songs];
-	console.log(songList);
 
 	let list = songList.map((song) => {
 		return (
@@ -12,6 +11,9 @@ const song = (props) => {
 				<div>{song.artist}</div>
 				<div>{song.genre}</div>
 				<div>{song.rating}</div>
+				<button type='submit' value={song.id} onClick={props.delete}>
+					DELETE
+				</button>
 			</div>
 		);
 	});

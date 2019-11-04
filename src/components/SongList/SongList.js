@@ -6,7 +6,7 @@ class Songlist extends Component {
 		return (
 			<React.Fragment>
 				<div>
-					<Song songs={this.props.songs} />
+					<Song songs={this.props.songs} delete={this.props.deleted} />
 				</div>
 			</React.Fragment>
 		);
